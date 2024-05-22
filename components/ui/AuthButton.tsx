@@ -11,7 +11,7 @@ interface Props {
 
 const AuthButton = ({ text }: Props) => {
   const route = useRouter();
-  if (text === "Log n") {
+  if (text === "Log In") {
     return (
       <Button
         onClick={() => {
@@ -25,7 +25,7 @@ const AuthButton = ({ text }: Props) => {
   }
   return (
     <Popover className="p-7">
-      <PopoverTrigger className="">
+      <PopoverTrigger>
         <Button
           onClick={() => {
             console.log("Account");

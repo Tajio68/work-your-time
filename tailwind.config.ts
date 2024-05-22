@@ -74,7 +74,7 @@ const config = {
       },
       screens: {
         tab: "640px",
-        pc: "1024px",
+        pc: "1025px",
       },
     },
   },

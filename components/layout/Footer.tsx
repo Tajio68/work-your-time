@@ -7,18 +7,15 @@ const Footer = () => {
         Coded by{" "}
         <Link
           href={"https://timeo-godin.fr"}
-          className="hover:underline hover:cursor-pointer underline-offset-4"
+          className="footerLink"
           target="_blank"
         >
           Timéo GODIN
         </Link>
       </p>
       <p>Work Your Time 2024</p>
-      <p className="hover:underline hover:cursor-pointer underline-offset-4">
+      <p className="footerLink">
         <Link href="/legals">Legals</Link>
-      </p>
-      <p className="hover:underline hover:cursor-pointer underline-offset-4">
-        Log Out
       </p>
     </footer>
   );
