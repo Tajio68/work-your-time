@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -18,23 +20,63 @@ interface Props {
   mode: "REGISTER" | "LOGIN";
 }
 
-const formSchema = z.object({
-  mail: z.string().email({
-    message: "E-mail is not valid",
-  }),
-  password: z.string().min(8).max(16),
-});
-
 const ConnectForm = ({ mode }: Props) => {
+  const router = useRouter();
+
+  const formSchema = z.object({
+    email: z.string().email({
+      message: "E-mail is not valid",
+    }),
+    password: z.string(),
+    confirmPassword: z.string().optional(),
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      mail: "",
+      email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {};
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (mode === "REGISTER") {
+      try {
+        const response = await fetch("http://localhost:3000/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+          }),
+        });
+        if (response.status === 201) {
+          router.push("/");
+        }
+        if (response.status === 409) {
+          alert("Email : " + values.email + " is already in use");
+        }
+        if (response.status === 406) {
+          alert("Passwords don't match");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      const res = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+      });
+
+      if (res?.error) {
+        console.error(res.error);
+        alert("Error");
+      }
+    }
+  };
 
   return (
     <Form {...form}>
@@ -44,7 +86,7 @@ const ConnectForm = ({ mode }: Props) => {
       >
         <FormField
           control={form.control}
-          name="mail"
+          name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Mail address</FormLabel>
@@ -80,7 +122,7 @@ const ConnectForm = ({ mode }: Props) => {
         {mode === "REGISTER" ? (
           <FormField
             control={form.control}
-            name="password"
+            name="confirmPassword"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>
