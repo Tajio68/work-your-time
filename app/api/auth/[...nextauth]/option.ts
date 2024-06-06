@@ -15,6 +15,7 @@ export const options: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "text", placeholder: "E-mail" },
         password: { label: "Password", type: "password" },
+        authMethod: { label: "AuthMethod", type: "text" },
       },
 
       async authorize(credentials) {
@@ -24,12 +25,13 @@ export const options: NextAuthOptions = {
               where: {
                 email: credentials?.email,
                 password: credentials?.password,
+                authMethod: credentials?.authMethod,
               },
             });
             if (foundUser) {
               return foundUser;
             } else {
-              alert("Incorrect password or mail address");
+              console.log("Incorrect password or mail");
             }
           }
         } catch (e) {
@@ -39,6 +41,25 @@ export const options: NextAuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    async signIn({ account, profile }) {
+      if (account?.provider === "google") {
+        const userExist = await prisma.user.findUnique({
+          where: { email: profile?.email },
+        });
+        if (userExist === null) {
+          const createUser = await prisma.user.create({
+            data: {
+              email: profile?.email as string,
+              password: "",
+              authMethod: "GOOGLE",
+            },
+          });
+        }
+      }
+      return true;
+    },
+  },
   pages: {
     signIn: "http://localhost:3000/connect",
   },

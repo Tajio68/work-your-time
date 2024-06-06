@@ -32,6 +32,7 @@ export const POST = async (req: NextRequest) => {
     data: {
       email: body.email,
       password: body.password,
+      authMethod: body.authMethod,
     },
   });
 

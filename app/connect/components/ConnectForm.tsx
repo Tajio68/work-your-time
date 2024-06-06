@@ -51,16 +51,26 @@ const ConnectForm = ({ mode }: Props) => {
           body: JSON.stringify({
             email: values.email,
             password: values.password,
+            confirmPassword: values.confirmPassword,
+            authMethod: "CREDENTIALS",
           }),
         });
-        if (response.status === 201) {
-          router.push("/");
-        }
-        if (response.status === 409) {
-          alert("Email : " + values.email + " is already in use");
-        }
-        if (response.status === 406) {
-          alert("Passwords don't match");
+        switch (response.status) {
+          case 201:
+            const res = signIn("credentials", {
+              email: values.email,
+              password: values.password,
+              confirmPassword: values.confirmPassword,
+              authMethod: "CREDENTIALS",
+            });
+            router.push("/");
+            break;
+          case 409:
+            alert("Email : " + values.email + " is already in use");
+            break;
+          case 406:
+            alert("Passwords don't match");
+            break;
         }
       } catch (error) {
         console.error(error);
@@ -69,6 +79,7 @@ const ConnectForm = ({ mode }: Props) => {
       const res = await signIn("credentials", {
         email: values.email,
         password: values.password,
+        authMethod: "CREDENTIALS",
       });
 
       if (res?.error) {

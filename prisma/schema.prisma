@@ -18,6 +18,7 @@ model User {
   name     String?
   email    String    @unique
   password String
+  authMethod  String
   sessions Sessions[]
   goal     Goals[]
 
@@ -43,3 +44,4 @@ model Goals {
 
   @@map("goals")
 }
+
