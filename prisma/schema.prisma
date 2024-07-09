@@ -14,34 +14,36 @@ datasource db {
 }
 
 model User {
-  id       String     @id @default(cuid())
-  name     String?
-  email    String    @unique
-  password String
-  authMethod  String
-  sessions Sessions[]
-  goal     Goals[]
+  id         String     @id @default(cuid())
+  name       String?
+  email      String     @unique
+  password   String
+  authMethod String
+  sessions   Sessions[]
+  goal       Goals[]
 
   @@map("users")
 }
 
 model Sessions {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
+  id        String  @id @default(cuid())
+  user      User    @relation(fields: [userId], references: [id])
   userId    String
-  beginTime DateTime
-  endTime   DateTime
-  totalTime DateTime
+  day       String
+  beginTime String
+  endTime   String?
+  totalTime String?
+  status    Boolean
 
   @@map("sessions")
 }
 
 model Goals {
-  id       String @id @default(cuid())
+  id       String  @id @default(cuid())
+  actual   Decimal @default(0)
   duration Int
-  user     User   @relation(fields: [userId], references: [id])
+  user     User    @relation(fields: [userId], references: [id])
   userId   String
 
   @@map("goals")
 }
-
