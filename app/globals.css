@@ -76,4 +76,7 @@
   .footerLink {
     @apply hover:underline hover:cursor-pointer underline-offset-4 underline pc:no-underline;
   }
+  .colorTitle {
+    @apply bg-gradient-to-r from-amber-400 to-cyan-400 bg-clip-text text-transparent;
+  }
 }
